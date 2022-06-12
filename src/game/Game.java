@@ -13,9 +13,14 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
-class Fire {
+class Fire{
     private int x;
     private int y;
+
+    public Fire(int x, int y) {
+        this.x = x;
+        this.y = y;
+    }
 
     public int getX() {
         return x;
@@ -32,45 +37,71 @@ class Fire {
     public void setY(int y) {
         this.y = y;
     }
-
-    public Fire(int x, int y) {
-        this.x = x;
-        this.y = y;
-
-
-
-
-    }
 }
 
 public class Game extends JPanel implements KeyListener, ActionListener {
+
+
     Timer timer = new Timer(5,this);
-    private int passing_time=0;
-    private int fired_bullet=0;
+
+
+
+    private int passing_time = 0;
+    private int fired_bullet = 0;
 
     private BufferedImage image;
 
-    private ArrayList<Fire> fires=new ArrayList<Fire>();
+    private ArrayList<Fire> fires = new ArrayList<Fire>();
 
-    private int firedirY=1;
+    private int firedirY = 5;
 
-    private int ballX=0;
+    private int ballX = 0;
 
-    private int balldirX=7;
+    private int balldirX=5;
 
     private int spaceShipX=0;
 
-    private int dirSpaceX=25;
+    private int dirSpaceX=20;
 
-
+    public boolean checkIt(){
+        for(Fire fire:fires){
+            if(new Rectangle(fire.getX(),fire.getY(),10,10).intersects(new Rectangle(ballX,0,20,20))){
+                return true;
+            }
+        }
+        return false;
+    }
     @Override
     public void paint(Graphics g) {
         super.paint(g);
 
-        g.setColor(Color.red);
+        passing_time += 5;
+
+        g.setColor(Color.RED);
         g.fillOval(ballX,0,20,20);
 
-        g.drawImage(image,spaceShipX,475,image.getWidth()/10,image.getHeight()/10,this);
+        g.drawImage(image,spaceShipX,480,image.getWidth()/10, image.getHeight()/10,this);
+
+        for (Fire fire : fires){
+            if (fire.getY() < 0) {
+
+                fires.remove(fire);
+            }
+        }
+
+
+        g.setColor(Color.red);
+        for (Fire fire : fires){
+
+            g.fillRect(fire.getX(), fire.getY(),10,30);
+        }
+        if (checkIt()){
+            timer.stop();
+            String message="You won!!!\n"+"Fired bullet: "+fired_bullet+"Passing Time: "+passing_time/1000;
+            JOptionPane.showMessageDialog(this,message);
+            System.exit(0);
+        }
+
     }
 
     @Override
@@ -78,60 +109,85 @@ public class Game extends JPanel implements KeyListener, ActionListener {
         super.repaint();
     }
 
-    public Game(){
+    public Game() {
+
         try {
             image = ImageIO.read(new FileImageInputStream(new File("spaceship.png")));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        setBackground(Color.BLACK);
+
+        setBackground(Color.black);
+
+
         timer.start();
 
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        ballX+=balldirX;
-        if(ballX>=750){
-            balldirX= -balldirX;
+
+        for(Fire fire : fires){
+
+            fire.setY(fire.getY()-firedirY);
+
         }
-        if ((ballX<=0)){
-            balldirX= -balldirX;
+
+
+
+        ballX += balldirX;
+
+        if (ballX >= 760){
+            balldirX = -balldirX;
         }
-    repaint();
+        if (ballX <=0) {
+            balldirX = -balldirX;
+        }
+        repaint();
     }
 
     @Override
     public void keyTyped(KeyEvent e) {
 
 
+
     }
 
     @Override
     public void keyPressed(KeyEvent e) {
-        int c=e.getKeyCode();
+
+        int c= e.getKeyCode();
         if(c==KeyEvent.VK_LEFT){
-            if(spaceShipX<=0){
+            if (spaceShipX <= 0){
                 spaceShipX=0;
             }else {
                 spaceShipX-=dirSpaceX;
             }
-        }
 
-        if(c==KeyEvent.VK_LEFT){
 
-        }else if (c==KeyEvent.VK_RIGHT){
-            if(spaceShipX>=720){
-                spaceShipX=720;
+        } else if (c==KeyEvent.VK_RIGHT) {
+
+            if (spaceShipX >=700){
+                spaceShipX=700;
             }else {
-                spaceShipX+=dirSpaceX;
+                spaceShipX += dirSpaceX;
             }
 
+        } else if (c == KeyEvent.VK_SPACE) {
+            fires.add(new Fire(spaceShipX+25,490));
+
+
+
+            fired_bullet++;
+
         }
+
     }
 
     @Override
     public void keyReleased(KeyEvent e) {
 
+
     }
+
 }
