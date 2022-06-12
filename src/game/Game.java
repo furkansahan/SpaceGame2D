@@ -44,6 +44,7 @@ class Fire {
 }
 
 public class Game extends JPanel implements KeyListener, ActionListener {
+    Timer timer = new Timer(5,this);
     private int passing_time=0;
     private int fired_bullet=0;
 
@@ -55,11 +56,11 @@ public class Game extends JPanel implements KeyListener, ActionListener {
 
     private int ballX=0;
 
-    private int balldirX=2;
+    private int balldirX=7;
 
     private int spaceShipX=0;
 
-    private int dirSpaceX=20;
+    private int dirSpaceX=25;
 
 
     @Override
@@ -84,23 +85,49 @@ public class Game extends JPanel implements KeyListener, ActionListener {
             throw new RuntimeException(e);
         }
         setBackground(Color.BLACK);
-
+        timer.start();
 
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-
+        ballX+=balldirX;
+        if(ballX>=750){
+            balldirX= -balldirX;
+        }
+        if ((ballX<=0)){
+            balldirX= -balldirX;
+        }
+    repaint();
     }
 
     @Override
     public void keyTyped(KeyEvent e) {
 
+
     }
 
     @Override
     public void keyPressed(KeyEvent e) {
+        int c=e.getKeyCode();
+        if(c==KeyEvent.VK_LEFT){
+            if(spaceShipX<=0){
+                spaceShipX=0;
+            }else {
+                spaceShipX-=dirSpaceX;
+            }
+        }
 
+        if(c==KeyEvent.VK_LEFT){
+
+        }else if (c==KeyEvent.VK_RIGHT){
+            if(spaceShipX>=720){
+                spaceShipX=720;
+            }else {
+                spaceShipX+=dirSpaceX;
+            }
+
+        }
     }
 
     @Override
