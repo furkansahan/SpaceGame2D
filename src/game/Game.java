@@ -97,7 +97,7 @@ public class Game extends JPanel implements KeyListener, ActionListener {
         }
         if (checkIt()){
             timer.stop();
-            String message="You won!!!\n"+"Fired bullet: "+fired_bullet+"Passing Time: "+passing_time/1000;
+            String message="You won!!!\n"+"Fired bullet: "+fired_bullet+"Passing Time: \n"+passing_time/1000.0+"second";
             JOptionPane.showMessageDialog(this,message);
             System.exit(0);
         }
